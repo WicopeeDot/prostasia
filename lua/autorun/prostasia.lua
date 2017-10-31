@@ -1,3 +1,5 @@
+if(game.SinglePlayer()) then return end
+
 local tag = "prostasia"
 
 local PLAYER = FindMetaTable("Player")
@@ -81,7 +83,9 @@ if SERVER then
 	end
 
 	hook.Add("PlayerDisconnected", tag.."_disconnect", function(ply)
-		prostasia_leavers[ply:SteamID()] = CurTime()
+		if enable_autoremove == true then
+			prostasia_leavers[ply:SteamID()] = CurTime()
+		end
 	end)
 
 	local function noticecleanup(steamid)
@@ -118,7 +122,19 @@ if SERVER then
 		prostasia_leavers[ply:SteamID()] = nil
 	end)
 
+	hook.Add("PhysgunDrop", tag.."_physdrop", function(ply,ent)
+		if(ent:IsPlayer() and ent:GetMoveType() == MOVETYPE_NONE) then
+			ent:SetMoveType(MOVETYPE_WALK)
+		end
+	end)
+
 	hook.Add("PhysgunPickup", tag.."_physpickup", function(ply,ent)
+		if(ent:IsPlayer()) then
+			ent:SetMoveType(MOVETYPE_NONE)
+
+			return (ent:IsFriend(ply) or ply:IsAdmin())
+		end
+
 		local chooch = check(ply,ent)
 
 		if(chooch == ERR_SOMETHING_GONE_WRONG) then
@@ -127,10 +143,6 @@ if SERVER then
 
 		if(type(chooch) ~= "number") then
 			return chooch
-		end
-
-		if(type(ent) == "Player") then
-			return ent:IsFriend(ply) or ply:IsAdmin()
 		end
 
 		return false
