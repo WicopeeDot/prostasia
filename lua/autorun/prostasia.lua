@@ -16,9 +16,13 @@ if SERVER then
 	util.AddNetworkString(tag.."_propspawned")
 	util.AddNetworkString(tag.."_clean")
 
-	prostasia_leavers = {}
+	local convar1 = CreateConVar("pss_ar_delay","5", FCVAR_NONE, "Prostasia's convar, changes auto-remove delay")
+	local convar2 = CreateConVar("pss_ar_enable","1", FCVAR_NONE, "Prostasia's convar, enables/disables auto-remove functionality.")
 
-	prostasia_howmanymins = 5
+	local enable_autoremove = convar2:GetBool()
+	local prostasia_howmanymins = convar1:GetFloat()
+
+	prostasia_leavers = {}
 
 	local args = {
 		two = {
@@ -97,10 +101,15 @@ if SERVER then
 	end
 
 	hook.Add("Think", tag.."_think", function()
-		for k,v in pairs(prostasia_leavers) do
-			if(CurTime()-v > prostasia_howmanymins*60) then
-				noticecleanup(k)
-				prostasia_leavers[k] = nil
+		enable_autoremove = convar2:GetBool()
+		prostasia_howmanymins = convar1:GetFloat()
+
+		if enable_autoremove == true then
+			for k,v in pairs(prostasia_leavers) do
+				if(CurTime()-v > prostasia_howmanymins*60) then
+					noticecleanup(k)
+					prostasia_leavers[k] = nil
+				end
 			end
 		end
 	end)
