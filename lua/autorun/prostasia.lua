@@ -129,7 +129,9 @@ if SERVER then
 
 	hook.Add("CanTool", tag.."_toolrestrict", function(ply,tr,tool)
 		local ent = tr.Entity
-
+		
+		return (ent ~= game.GetWorld())
+		
 		local chooch = check(ply,ent)
 
 		if(chooch == ERR_SOMETHING_GONE_WRONG) then
