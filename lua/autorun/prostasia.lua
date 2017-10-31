@@ -18,11 +18,11 @@ if SERVER then
 	util.AddNetworkString(tag.."_propspawned")
 	util.AddNetworkString(tag.."_clean")
 
-	local convar1 = CreateConVar("pss_ar_delay","5", FCVAR_NONE, "Prostasia's convar, changes auto-remove delay")
-	local convar2 = CreateConVar("pss_ar_enable","1", FCVAR_NONE, "Prostasia's convar, enables/disables auto-remove functionality.")
+	local convarb = CreateConVar("pss_ar_delay","5", FCVAR_NONE, "Prostasia's convar, changes auto-remove delay")
+	local convara = CreateConVar("pss_ar_enable","1", FCVAR_NONE, "Prostasia's convar, enables/disables auto-remove functionality.")
 
-	local enable_autoremove = convar2:GetBool()
-	local prostasia_howmanymins = convar1:GetFloat()
+	local enable_autoremove = convara:GetBool()
+	local prostasia_howmanymins = convarb:GetFloat()
 
 	prostasia_leavers = {}
 
@@ -105,8 +105,8 @@ if SERVER then
 	end
 
 	hook.Add("Think", tag.."_think", function()
-		enable_autoremove = convar2:GetBool()
-		prostasia_howmanymins = convar1:GetFloat()
+		enable_autoremove = convara:GetBool()
+		prostasia_howmanymins = convarb:GetFloat()
 
 		if enable_autoremove == true then
 			for k,v in pairs(prostasia_leavers) do
